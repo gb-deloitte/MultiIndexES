@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -27,6 +28,12 @@ import java.util.List;
 public class EmployeeController {
 
     private static final Logger logger = LoggerFactory.getLogger(EmployeeController.class);
+
+    @Value("${ipaddress}")
+    String ipaddress;
+
+    @Value("${elasticport}")
+    String elasticPort;
 
     private RestTemplate restTemplate=new RestTemplate();
     @Autowired
@@ -60,8 +67,7 @@ public class EmployeeController {
     @GetMapping("/employee")
     public List<Employee> getAllEmployee() {
 
-        List<Employee> emplist=employeeDBService.getEmployees();
-        return emplist;
+        return employeeDBService.getEmployees();
     }
 
     @PostMapping("/employee/elastic")
@@ -111,15 +117,16 @@ public class EmployeeController {
     @GetMapping("/employee/globalsearch/{keyword}")
     public Object globalSearchWithKeyword(@PathVariable String keyword) {
 
-        logger.info("========================= Searching for keyword: "+ keyword);
+        logger.info("========================= Searching for keyword: {}", keyword);
         HttpHeaders headers = new HttpHeaders();
         headers.add("Accept", MediaType.APPLICATION_JSON.toString());
         headers.add("Content-Type",MediaType.APPLICATION_JSON.toString());
         String jbo="{\"query\": {\"query_string\": {\"query\": \"*"+keyword+"*\"}}}";
-        HttpEntity entity = new HttpEntity(jbo, headers);
-        //TODO : Replace "192.168.1.103" with your system IP Address for docker deployment else use localhost
+        HttpEntity<?> entity = new HttpEntity<>(jbo, headers);
+        //Replace "192.168.1.103" with your system IP Address for docker deployment else use localhost
+        String urlString = "http://"+ ipaddress+":"+ elasticPort + "/*/_search";
         return restTemplate.exchange
-                ("http://192.168.1.103:9200/*/_search",  HttpMethod.POST,entity,Object.class).getBody();
+                (urlString,  HttpMethod.POST,entity,Object.class).getBody();
 
     }
 }

@@ -23,7 +23,7 @@ public class EmployeeElasticService {
     public EmployeeIndex addEmployeeDocument(EmployeeIndex employee) {
 
         EmployeeIndex emp = employeeElasticRepository.save(employee);
-        logger.info("=============== Document added successfully for employee id: " + employee.getEmployeeId());
+        logger.info("=============== Document added successfully for employee id: {} " , employee.getEmployeeId());
         return emp;
     }
 
@@ -47,7 +47,7 @@ public class EmployeeElasticService {
 
     public List<EmployeeIndex> getEmployeesBySkills(String skill) {
         Iterator<EmployeeIndex> iterator = employeeElasticRepository.findAllBySkills(skill).iterator();
-        List<EmployeeIndex> employees = new ArrayList<EmployeeIndex>();
+        List<EmployeeIndex> employees = new ArrayList<>();
         while (iterator.hasNext()) {
             employees.add(iterator.next());
         }
@@ -60,18 +60,19 @@ public class EmployeeElasticService {
 
     public List<EmployeeIndex> getEmployeesBySkillsAndExp(int experience, String skill) {
 
-        logger.info("==================== Fetching employee with previous experience: " + experience + " and skill as: " + skill);
+        logger.info("==================== Fetching employee with previous experience: {} and skill as: {} " ,experience,skill);
         return employeeElasticRepository.findEmpBySkillsAndExperience(experience, skill);
 
     }
 
     public List<EmployeeIndex> getEmployeesUsingKeyword(String keyword) {
         String[] keywords = keyword.split(" ");
-        String overallKeyword = "";
-        for (int i = 0; i < keywords.length; i++) {
-            overallKeyword = overallKeyword + "*" + keywords[i] + "* ?=";
+        StringBuilder overallKeyword = new StringBuilder();
+        for(int i=0;i<keywords.length;i++)
+        {
+            overallKeyword.append(overallKeyword+"*"+keywords[i]+"* ?=");
         }
-        overallKeyword = overallKeyword.substring(0, overallKeyword.length() - 3);
-        return employeeElasticRepository.getEmployeeUsingKeyword(overallKeyword);
+        String str= overallKeyword.toString();
+        return employeeElasticRepository.getEmployeeUsingKeyword(str.substring(0,str.length()-3));
     }
 }

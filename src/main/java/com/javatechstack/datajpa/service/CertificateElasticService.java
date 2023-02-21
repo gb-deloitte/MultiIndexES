@@ -19,13 +19,13 @@ public class CertificateElasticService {
     CertificateElasticRepository certificateElasticRepository;
     public List<CertificateIndex> getCertificatesUsingKeyword(String keyword){
         String[] keywords=keyword.split(" ");
-        String overallKeyword="";
+        StringBuilder overallKeyword = new StringBuilder();
         for(int i=0;i<keywords.length;i++)
         {
-            overallKeyword=overallKeyword+"*"+keywords[i]+"* ?=";
+            overallKeyword.append(overallKeyword+"*"+keywords[i]+"* ?=");
         }
-        overallKeyword=overallKeyword.substring(0,overallKeyword.length()-3);
-        return certificateElasticRepository.getCertificatesUsingKeyword(overallKeyword);
+        String str= overallKeyword.toString();
+        return certificateElasticRepository.getCertificatesUsingKeyword(str.substring(0,str.length()-3));
     }
 
     public CertificateIndex getCertificatesById(int id){
@@ -34,8 +34,7 @@ public class CertificateElasticService {
     }
 
     public CertificateIndex addCertificateIndex(CertificateIndex certificateIndex){
-        logger.info("=============== Certification Document added successfully:  "+ certificateIndex.getName());
-        CertificateIndex certification=certificateElasticRepository.save(certificateIndex);
-        return certification;
+        logger.info("=============== Certification Document added successfully: {}  ", certificateIndex.getName());
+        return certificateElasticRepository.save(certificateIndex);
     }
 }

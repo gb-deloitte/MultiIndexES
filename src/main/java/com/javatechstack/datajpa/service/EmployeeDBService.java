@@ -20,7 +20,7 @@ public class EmployeeDBService {
     public Employee addEmployee(Employee employee) {
 
         Employee employee1 = employeeJpaRepository.save(employee);
-        logger.info("==================Details added with employee id: " + employee1.getId());
+        logger.info("==================Details added with employee id: {}" , employee1.getId());
         return employee1;
     }
 
@@ -31,14 +31,13 @@ public class EmployeeDBService {
             employee.setId(employee1.get().getId());
             return employeeJpaRepository.save(employee);
         }
-        logger.info("==================updated details of emp with employee id: " + employee.getId());
+        logger.info("==================updated details of emp with employee id: {} " , employee.getId());
         return employee;
     }
 
     public List<Employee> getEmployees() {
         logger.info("================== Retrieving all existing employees from db ======================");
-        List<Employee> empList = employeeJpaRepository.findAll();
-        return empList;
+        return employeeJpaRepository.findAll();
     }
 
 
