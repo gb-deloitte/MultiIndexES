@@ -24,8 +24,4 @@ public class EmployeeSkillDetails {
     @Column
     private String rating;
 
-//    @ManyToOne(fetch= FetchType.LAZY)
-//    @JoinColumn(name = "employee_id")
-//    @JsonBackReference
-//    private Employee emp;
 }

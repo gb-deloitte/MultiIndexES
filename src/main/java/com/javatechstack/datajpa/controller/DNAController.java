@@ -15,7 +15,7 @@ import java.util.List;
 @RestController
 public class DNAController {
 
-    private static final Logger logger = LoggerFactory.getLogger(CertificationController.class);
+    private static final Logger logger = LoggerFactory.getLogger(DNAController.class);
 
     @Autowired
     private EmployeeElasticService employeeElasticService;
